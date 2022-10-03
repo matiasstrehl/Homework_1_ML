@@ -1,0 +1,246 @@
+---
+title: "HW1"
+output: html_document
+date: "2022-10-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1 (based on ESL book and class notes)
+
+**Define supervised and unsupervised learning. What are the difference(s) between them?**
+
+In supervised learning, the goal is to predict the value of an outcome measure based on a number of predictor measures. The actual data is the supervisor, so we need to give the model observed output and input. In other words, we need - besides predictors - to have the outcome data. The majority of machine learning is supervised. On the other hand, in unsupervised learning, there is no outcome measure, and the goal is to describe associations and patterns among input measures. In other words, we don't give the model output data, so the learning process proceeds without supervisor (we only have predictors)
+
+Therefore, the main differences between supervised and unsupervised learning are that while the former's goal is to predict the value of an outcome measure, using the outcome data as supervisor, the latter's is to learn patterns and associations between predictors, without using any outcome data.
+
+## Question 2 (based on ESL book and class notes)
+
+**Explain the difference between a regression model and a classification model, specifically in the context of machine learning.**
+
+In the context of machine learning, a regression model implies that the outcome measure "Y" we are interested in is a quantitative variable (e.g price, blood pressure, wages). On the other hand, a classification model implies that our outcome measure "Y" is a qualitative variable (e.g survived/not survived, voted for Clinton/voted for Trump).
+
+## Question 3 (based on ITSL book and class notes)
+
+**Name two commonly used metrics for regression ML problems. Name two commonly used metrics for classification ML problems.**
+
+- **regression ML problems:** Mean squared error (MSE); Mean absolute error (MAE)
+- **classification ML problems:** Error rate (ER); K-nearest neighbors (KNN) classifier.
+
+
+## Question 4 (based on ISL book and class notes)
+
+**As discussed, statistical models can be used for different purposes. These purposes can generally be classified into the following three categories. Provide a brief description of each.**
+
+- **Descriptive models:** in this category, the goal is to choose the model that best visually emphasize a trend in the data, that is, using a line on a scatter plot.
+- **Inferential models:** in this category we are interested in stating relationships between outcome and predictor(s), by testing which features are statistically significant. The goal is either to test theories or to possibly state causal claims (or simple correlations).
+- **Predictive models:** in this category the goal is to predict the outcome measure "Y" with the minimum reducible error, for instance, by choosing what combo of features fits best to predict the outcome. These models are not focused on hypothesis testing.
+
+## Question 5 (based on ISL book and class notes)
+
+**Predictive models are frequently used in machine learning, and they can usually be described as either mechanistic or empirically-driven. Answer the following questions **
+
+- **Define mechanistic. Define empirically-driven. How do these model types differ? How are they similar?**
+
+Mechanistic or parametric models involve a two-step model-based approach: first, we have to make an assumption about the funcional form or shape of *f* (e.g linear). After a model has been selected, we have to use the data to *fit* or *train* the model. For instance, if the model is linear, we need to estimate the correspondent parameters.
+
+Empirically-driven or non-parametric models do not make any explicit assumption about the functional form of *f*, being this the main difference with mechanistic models. Instead, they seek an estimate of *f* that gets as close to the data as possible. 
+
+Another difference between these models is that empirically-driven models are much more flexible than mechanistic models. On the other hand, they are similar in the sense that both can experiment overfitting. While mechanistic models can experiment overfitting if one includes an excessive number of parameters, empirically-driven models can experiment the same problem if one finds a function that represents the data with such detail that won't do a good job with different random samples.
+
+- **In general, is a mechanistic or empirically-driven model easier to understand? Explain your choice.**
+
+Mechanistic models are easier to understand. For instance, in a linear model, all we have to do to understand the model is to interpret our estimations of the parameters to establish a linear relationship between the predictors and our outcome of interest. This is really easy to interpret in a linear model, even for someone that doesn't study statistics. On the other hand, to interpret an empirically-driven model can be really hard, since the model will try to fit the data as accurate as possible, which can be almost impossible to interpret in some cases.
+
+- **Describe how the bias-variance trade-off is related to the use of mechanistic or empirically-driven models.**
+
+Bias refers to the error that is introduced by approximating a real-life problem, which can be extremely complicated for simpler models. This is why mechanistic models do a poorer job on this aspect, relative to empirically-driven models, that are much more flexible. For instance, in a linear regression model, it is assumed that the relationship between Y and the predictors is linear, which seems quite unlikely for a real-life problem.
+
+On the other hand, variance refers to the amount by which $\hat{f}$ would change if we estimated it using a different training data set. Ideally, the estimate for *f* should not vary too much between training data sets. In general, more flexible models -- like empirically-driven models -- have higher variance than less flexible ones --like mechanistic models --. This is because more flexible models fit the specific training data so good that it may vary a lot when using a different training data set.
+
+Therefore, there is a variance-bias trade-off related to the use of mechanistic or empirically-driven models. Mechanistic models usually have less variance but greater bias relative to empirically-driven ones.
+
+
+## Question 6
+
+**A political candidate’s campaign has collected some detailed voter history data from their constituents. The campaign is interested in two questions:**
+
+- **Given a voter’s profile/data, how likely is it that they will vote in favor of the candidate?**
+
+- **How would a voter’s likelihood of support for the candidate change if they had personal contact with the candidate?**
+
+**Classify each question as either predictive or inferential. Explain your reasoning for each.**
+
+The first one is a predictive question. We want to know how likely it is that they will vote in favor of the candidate given a voter's profile/data. The collected data has information about both predictors and vote decisions of constituents for past periods. Therefore, the model will use the data to predict -- given the voters' profiles in the present -- the probability that they will vote in favor of the candidate.
+
+The second one is an inferential question. We are interested in knowing how much the likelihood of supporting for the candidate would change if they had personal contact with the candidate. We want to know the causal change that having a personal contact with the candidate would cause on the probability of supporting him/her. Therefore, it is an inferential question, as we stressed in question 4.
+
+# Exploratory data analysis
+```{r libraries, echo = T, message = F, warning = F}
+# Load libraries
+library(tidyverse)
+library(ggplot2)
+library(magrittr)
+```
+
+
+```{r tibble, echo = T, message = F, warning = F}
+# Create a tibble for the data set
+mpg <- tibble(mpg)
+```
+
+## Excercise 1
+**We are interested in highway miles per gallon, or the hwy variable. Create a histogram of this variable. Describe what you see/learn.**
+
+```{r hist1, echo = T, include = T, message = F, warning = F}
+# Histogram
+ggplot(data = mpg, aes(x = hwy)) +
+  geom_histogram(color = "coral4", fill = "coral2", binwidth = 3)+
+  labs(
+    title="Distribution of miles per gallon in highway",
+    x = "Miles per gallon in highway",
+    y = "Frequency")+
+  theme_classic()
+```
+
+  I observe that most of the cars lie between 10 and 35 miles per gallon approximately, and that are very few of them have more than 40 miles per gallon in highway.
+
+## Excercise 2
+**Create a scatterplot. Put hwy on the x-axis and cty on the y-axis. Describe what you notice. Is there a relationship between hwy and cty? What does this mean?**
+
+```{r scatter1, echo = T, include = T, message = F, warning = F}
+# Scatterplot
+ggplot(mpg, aes(x = hwy, y = cty)) + 
+  geom_point(color = "coral2", size = 2) +
+  theme_classic() +
+  labs(
+    title = "Miles per gallon in Highway Vs City",
+    x = "Miles per gallon in highway",
+    y = "Miles per gallon in city"
+  )
+  
+```
+
+There is clearly a positive relationship between these two variables. This means that as cars present a greater number of Miles per gallon in highway (*hwy*) they also tend to present a greater number of miles per gallon in city (*cty*), and viceversa, which makes sense. Besides, the positive relation that we can observe seems also to be approximately linear.
+
+
+## Excercise 3
+
+**Make a bar plot of manufacturer. Flip it so that the manufacturers are on the y-axis. Order the bars by height. Which manufacturer produced the most cars? Which produced the least?**
+
+ggplot(data, aes(x = quarter, y = profit)) + 
+  geom_col()
+
+```{r hist2, echo = T, include = T, message = F, warning = F}
+#install.packages("forcats")
+library(forcats)
+# Bar plot
+ggplot(data = mpg, aes(y = fct_reorder(as_factor(manufacturer), manufacturer,.fun='length'))) +
+  geom_bar(color = "coral4", fill = "coral2", binwidth = 1)+
+  labs(
+    title = "Distribution of manufacturer",
+    x = "Frequency",
+    y = "Manufacturer"
+  )+
+  theme_classic()
+```
+
+The graph shows that the Dodge was the manufacturer that produced the largest number of cars while Lincoln produced the least number of cars.
+
+
+
+## Excercise 4
+**Make a box plot of hwy, grouped by cyl. Do you see a pattern? If so, what?**
+
+```{r box1, echo = T, include = T, message = F, warning = F}
+ggplot(data = mpg, aes(x = as.factor(cyl), y = hwy)) +
+  geom_boxplot(fill = "coral2", color = "coral4") +
+  labs(
+    title = "Miles per gallon in highway by number of cylinders",
+    x = "Number of cylinders",
+    y = "Miles per gallon in highway"
+  ) +
+  theme_classic()
+```
+
+There seems to be a negative relationship between the number of cylinders and Miles per gallon on highway, that is, as the car has a greater number of cylinders, it performs less miles per gallon in highway.
+
+
+## Excercise 5
+
+**Use the corrplot package to make a lower triangle correlation matrix of the mpg dataset. (Hint: You can find information on the package here.)**
+
+**Which variables are positively or negatively correlated with which others? Do these relationships make sense to you? Are there any that surprise you?**
+
+
+```{r corrplot1, echo = T, include = T, message = F, warning = F}
+# install.packages("corrplot")
+library(corrplot)
+# Corrplot 
+corrplot(cor(mpg %>%
+           select(displ, year, cyl, cty, hwy)), 
+         method = 'number', order = 'AOE', type = 'lower', diag = FALSE, col = COL2("RdBu", 10))
+```
+
+On the one hand, the variables that are positively correlated are displ and year, displ and cyl, cyl and year, and hwy and cty. The strong positive relationship between hwy and cty is expected since both describe the fuel performance of cars in highway and in city, respectively. Also, it is expected for the number of cylinders to be positively correlated with engine displacements (displ).
+
+On the other hand, cyl and displ are negatively correlated with both cty and hwy.
+A negative relationship between number of cylinders (cyl) and fuel performance of cars (both cty and hwy) is expected, as we saw above in other graphs. A similar pattern is expected for the relationship of this last two variables and engine displacements.
+
+Finally, there is a small but positive correlation between year and the variables cyl and displ. This could be mechanical, maybe because newer cars come with a greater number of cylinders and engine displacements.
+
+Therefore, the correlations between variables make sense to me.
+
+# 231 Students only
+## Excercise 6
+
+**Recreate the following graphic, as closely as you can. Hint: Use the ggthemes package.**
+
+
+```{r ex6, echo = T, include = T, message = F, warning = F}
+# install.packages("ggthemes")
+library(ggthemes)
+
+ggplot(data = mpg, aes(x = hwy, y = class)) +
+  geom_boxplot() +
+  geom_jitter(color = "gray", alpha = 0.5) +
+  labs(
+    x = "Highway MPG",
+    y = "Vehicle class"
+  ) +
+  theme_gdocs()
+```
+
+## Excercise 7
+
+**Recreate the following graphic.**
+
+
+```{r ex7, echo = T, include = T, message = F, warning = F}
+ggplot(data = mpg, aes(x = class, y = hwy, fill = drv )) +
+  geom_boxplot() +
+  labs(
+    x = "class",
+    y = "hwy"
+  )
+```
+
+## Excercise 8
+
+**Recreate the following graphic.**
+
+```{r ex8, echo = T, include = T, message = F, warning = F}
+# Scatterplot
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point(aes(color = drv)) +
+  labs(
+    x = "displ",
+    y = "hwy"
+  ) +
+  geom_smooth(method = loess, se = F, aes(linetype = drv, fullrange = T))
+```
+
+
+
