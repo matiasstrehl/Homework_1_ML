@@ -8,7 +8,7 @@ date: "2022-10-01"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Question 1 (based on ESL book and class notes)
+## Question 1 (based on ESL book and class notes) 
 
 **Define supervised and unsupervised learning. What are the difference(s) between them?**
 
